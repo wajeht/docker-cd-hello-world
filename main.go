@@ -10,7 +10,7 @@ var version = "dev"
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World! Version: %s\n", version)
+		fmt.Fprintf(w, "Hello World! Version: %s - GitOps works!\n", version)
 	})
 
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
