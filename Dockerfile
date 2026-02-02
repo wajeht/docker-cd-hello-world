@@ -1,6 +1,7 @@
 FROM golang:1.22-alpine AS builder
 WORKDIR /app
-COPY main.go .
+COPY go.mod ./
+COPY main.go ./
 ARG VERSION=dev
 RUN go build -ldflags "-X main.version=${VERSION}" -o hello-world .
 
