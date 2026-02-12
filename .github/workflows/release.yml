@@ -118,6 +118,8 @@ jobs:
       (github.event.action == 'labeled' && github.event.label.name == 'temp-deploy') ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'temp-deploy'))
     needs: temp-build
+    permissions:
+      deployments: write
     uses: wajeht/docker-cd-deploy-workflow/.github/workflows/temp-deploy.yaml@v0.0.3
     with:
       app-path: apps/hello-world
@@ -130,6 +132,8 @@ jobs:
     if: >
       github.event.action == 'closed' ||
       (github.event.action == 'unlabeled' && github.event.label.name == 'temp-deploy')
+    permissions:
+      deployments: write
     uses: wajeht/docker-cd-deploy-workflow/.github/workflows/temp-cleanup.yaml@v0.0.3
     with:
       app-path: apps/hello-world
