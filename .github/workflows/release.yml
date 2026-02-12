@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   pull_request:
     types: [labeled, closed]
 
@@ -19,7 +19,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      version: ${{ steps.version.outputs.VERSION }}
+      sha: ${{ steps.sha.outputs.SHA }}
 
     steps:
       - uses: actions/checkout@v4
@@ -31,9 +31,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Get short SHA
+        id: sha
+        run: echo "SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -41,9 +41,9 @@ jobs:
           context: .
           push: true
           build-args: |
-            VERSION=${{ steps.version.outputs.VERSION }}
+            VERSION=${{ steps.sha.outputs.SHA }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.sha.outputs.SHA }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   deploy:
@@ -51,7 +51,7 @@ jobs:
     uses: wajeht/docker-cd-deploy-workflow/.github/workflows/deploy.yaml@main
     with:
       app-path: apps/hello-world
-      tag: ${{ needs.build-and-push.outputs.version }}
+      tag: ${{ needs.build-and-push.outputs.sha }}
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
