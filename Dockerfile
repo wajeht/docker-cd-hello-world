@@ -1,12 +1,9 @@
-FROM golang:1.22-alpine AS builder
+FROM node:22-alpine
 WORKDIR /app
-COPY go.mod ./
-COPY main.go ./
+COPY package.json package-lock.json* ./
+RUN npm ci --production
+COPY . .
 ARG VERSION=dev
-RUN go build -ldflags "-X main.version=${VERSION}" -o hello-world .
-
-FROM alpine:3.19
-RUN apk add --no-cache ca-certificates
-COPY --from=builder /app/hello-world /hello-world
-EXPOSE 8080
-CMD ["/hello-world"]
+ENV VERSION=$VERSION
+EXPOSE 3000
+CMD ["sh", "-c", "npm run migrate && npm start"]
