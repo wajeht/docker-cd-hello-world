@@ -13,7 +13,7 @@ app.get('/', async (req, res) => {
     await knex('visits').insert({});
     const [{ count }] = await knex('visits').count('id');
     console.log(`[${appName}] visit #${count}`);
-    res.send(`Hello World! App: ${appName} | Version: ${version} | Visits: ${count}\n`);
+    res.send(`Hello World! App: ${appName} Version: ${version} - Visits: ${count}\n`);
   } catch (err) {
     res.status(500).send(`Error: ${err.message}\n`);
   }
