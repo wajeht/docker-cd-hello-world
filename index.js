@@ -12,7 +12,7 @@ app.get('/', async (_req, res) => {
     await db('visits').insert({});
     const [{ count }] = await db('visits').count('id');
     console.log(`[${appName}] visit #${count}`);
-    res.send(`Hello World! App: ${appName} - Visits: ${count}\n`);
+    res.send(`Goodbye World! App: ${appName} - Visits: ${count}\n`);
   } catch (err) {
     res.status(500).send(`Error: ${err.message}\n`);
   }
